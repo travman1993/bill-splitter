@@ -15,10 +15,9 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
             content.classList.remove('active');
         });
         
-        document.getElementById(`${mode}-mode`).classList.add('active');
-        
-        if (mode === 'lucky') {
-            updateGamePeopleList();
+        const modeElement = document.getElementById(`${mode}-mode`);
+        if (modeElement) {
+            modeElement.classList.add('active');
         }
     });
 });
@@ -107,7 +106,6 @@ addPersonBtn.addEventListener('click', () => {
     state.people.push({ name });
     personNameInput.value = '';
     renderPeopleList();
-    updateGamePeopleList();
 });
 
 addItemBtn.addEventListener('click', () => {
@@ -196,7 +194,6 @@ window.removePerson = function(index) {
     });
     renderPeopleList();
     renderItemsList();
-    updateGamePeopleList();
 };
 
 window.removeItem = function(itemId) {
@@ -278,57 +275,6 @@ itemizedCalcBtn.addEventListener('click', () => {
     document.getElementById('itemized-grand-total').textContent = formatCurrency(subtotal + tax + tip);
     
     itemizedResults.classList.remove('hidden');
-});
-
-// GAME MODE LOGIC
-const gameResult = document.getElementById('game-result');
-const spinBtn = document.getElementById('spin-btn');
-const spinAgainBtn = document.getElementById('spin-again-btn');
-const gamePeopleList = document.getElementById('game-people-list');
-const payerName = document.getElementById('payer-name');
-
-function updateGamePeopleList() {
-    gamePeopleList.innerHTML = '';
-    if (state.people.length === 0) {
-        gamePeopleList.innerHTML = '<p style="color: #999;">Add people in Itemized mode first!</p>';
-        spinBtn.disabled = true;
-        return;
-    }
-    
-    spinBtn.disabled = false;
-    state.people.forEach(person => {
-        const p = document.createElement('p');
-        p.textContent = person.name;
-        gamePeopleList.appendChild(p);
-    });
-}
-
-spinBtn.addEventListener('click', () => {
-    if (state.people.length === 0) {
-        alert('Add people first in the Itemized mode!');
-        return;
-    }
-    
-    const randomIndex = Math.floor(Math.random() * state.people.length);
-    const selectedPerson = state.people[randomIndex].name;
-    
-    let count = 0;
-    const interval = setInterval(() => {
-        const randomPerson = state.people[Math.floor(Math.random() * state.people.length)].name;
-        payerName.textContent = randomPerson;
-        count++;
-        
-        if (count > 15) {
-            clearInterval(interval);
-            payerName.textContent = selectedPerson;
-            gameResult.classList.remove('hidden');
-        }
-    }, 100);
-});
-
-spinAgainBtn.addEventListener('click', () => {
-    gameResult.classList.add('hidden');
-    spinBtn.click();
 });
 
 // UTILITIES
