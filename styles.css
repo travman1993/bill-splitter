@@ -346,10 +346,18 @@ textarea:focus {
 .people-list,
 .items-list {
     margin-bottom: 1rem;
+    min-height: 0;
 }
 
-.person-item,
 .item-row {
+    display: block;
+    padding: 1rem;
+    background-color: var(--bg-light);
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+}
+
+.person-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -357,6 +365,7 @@ textarea:focus {
     background-color: var(--bg-light);
     border-radius: 6px;
     margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
 .remove-btn {

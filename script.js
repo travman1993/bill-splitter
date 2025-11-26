@@ -91,44 +91,127 @@ const itemizedCalcBtn = document.getElementById('itemized-calc-btn');
 const itemizedResults = document.getElementById('itemized-results');
 const itemizedBreakdown = document.getElementById('itemized-breakdown');
 
-addPersonBtn.addEventListener('click', () => {
-    const name = personNameInput.value.trim();
-    if (!name) {
-        alert('Please enter a person\'s name.');
-        return;
-    }
-    
-    if (state.people.some(p => p.name === name)) {
-        alert('This person is already added.');
-        return;
-    }
-    
-    state.people.push({ name });
-    personNameInput.value = '';
-    renderPeopleList();
-});
-
-addItemBtn.addEventListener('click', () => {
-    const name = itemNameInput.value.trim();
-    const price = parseFloat(itemPriceInput.value) || 0;
-    
-    if (!name || price <= 0) {
-        alert('Please enter a valid item name and price.');
-        return;
-    }
-    
-    const itemId = Date.now();
-    state.items.push({
-        id: itemId,
-        name,
-        price,
-        assignedTo: []
+// Add event listeners only if elements exist
+if (addPersonBtn) {
+    addPersonBtn.addEventListener('click', () => {
+        const name = personNameInput.value.trim();
+        if (!name) {
+            alert('Please enter a person\'s name.');
+            return;
+        }
+        
+        if (state.people.some(p => p.name === name)) {
+            alert('This person is already added.');
+            return;
+        }
+        
+        state.people.push({ name });
+        personNameInput.value = '';
+        renderPeopleList();
     });
-    
-    itemNameInput.value = '';
-    itemPriceInput.value = '';
-    renderItemsList();
-});
+}
+
+if (addItemBtn) {
+    addItemBtn.addEventListener('click', () => {
+        const name = itemNameInput.value.trim();
+        const price = parseFloat(itemPriceInput.value) || 0;
+        
+        if (!name || price <= 0) {
+            alert('Please enter a valid item name and price.');
+            return;
+        }
+        
+        const itemId = Date.now();
+        state.items.push({
+            id: itemId,
+            name,
+            price,
+            assignedTo: []
+        });
+        
+        itemNameInput.value = '';
+        itemPriceInput.value = '';
+        renderItemsList();
+    });
+}
+
+if (itemizedCalcBtn) {
+    itemizedCalcBtn.addEventListener('click', () => {
+        if (state.people.length === 0) {
+            alert('Please add at least one person.');
+            return;
+        }
+        
+        if (state.items.length === 0) {
+            alert('Please add at least one item.');
+            return;
+        }
+        
+        const taxPercent = parseFloat(itemizedTaxInput.value) || 0;
+        const tipPercent = parseFloat(itemizedTipInput.value) || 0;
+        
+        const subtotal = state.items.reduce((sum, item) => sum + item.price, 0);
+        const personShares = {};
+        
+        state.people.forEach(person => {
+            personShares[person.name] = 0;
+        });
+        
+        state.items.forEach(item => {
+            if (item.assignedTo.length === 0) {
+                alert(`Item "${item.name}" is not assigned to anyone.`);
+                return;
+            }
+            
+            const sharePerPerson = item.price / item.assignedTo.length;
+            item.assignedTo.forEach(person => {
+                personShares[person.name] += sharePerPerson;
+            });
+        });
+        
+        const tax = (subtotal * taxPercent) / 100;
+        const tip = ((subtotal + tax) * tipPercent) / 100;
+        
+        itemizedBreakdown.innerHTML = '';
+        state.people.forEach(person => {
+            const subtotalShare = personShares[person.name];
+            const proportion = subtotalShare / subtotal;
+            const taxShare = tax * proportion;
+            const tipShare = tip * proportion;
+            const totalShare = subtotalShare + taxShare + tipShare;
+            
+            const div = document.createElement('div');
+            div.className = 'person-breakdown';
+            div.innerHTML = `
+                <h5>${person.name}</h5>
+                <div class="breakdown-item">
+                    <span>Subtotal:</span>
+                    <span>${formatCurrency(subtotalShare)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Tax (${taxPercent}%):</span>
+                    <span>${formatCurrency(taxShare)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Tip (${tipPercent}%):</span>
+                    <span>${formatCurrency(tipShare)}</span>
+                </div>
+                <div class="person-total">
+                    <span>Total:</span>
+                    <span>${formatCurrency(totalShare)}</span>
+                </div>
+            `;
+            itemizedBreakdown.appendChild(div);
+        });
+        
+        document.getElementById('itemized-subtotal').textContent = formatCurrency(subtotal);
+        document.getElementById('itemized-tax-amount').textContent = formatCurrency(tax);
+        document.getElementById('itemized-tip-amount').textContent = formatCurrency(tip);
+        document.getElementById('itemized-grand-total').textContent = formatCurrency(subtotal + tax + tip);
+        
+        itemizedResults.classList.remove('hidden');
+    });
+}
 
 function renderPeopleList() {
     peopleList.innerHTML = '';
@@ -149,7 +232,7 @@ function renderItemsList() {
         const div = document.createElement('div');
         div.className = 'item-row';
         
-        let checkboxesHTML = '<div class="item-people-checkboxes" style="width: 100%; margin-top: 0.5rem;">';
+        let checkboxesHTML = '<div class="item-people-checkboxes">';
         state.people.forEach((person) => {
             const isChecked = item.assignedTo.includes(person.name) ? 'checked' : '';
             checkboxesHTML += `
@@ -162,14 +245,17 @@ function renderItemsList() {
         checkboxesHTML += '</div>';
         
         div.innerHTML = `
-            <div style="flex: 1;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span><strong>${item.name}</strong></span>
-                    <span>${formatCurrency(item.price)}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <div>
+                    <strong>${item.name}</strong>
+                    <span style="color: #7f8c8d; font-size: 0.9rem; margin-left: 1rem;">${formatCurrency(item.price)}</span>
                 </div>
+                <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+            </div>
+            <div style="margin-top: 0.5rem;">
+                <small style="color: #7f8c8d;">Assign to:</small>
                 ${checkboxesHTML}
             </div>
-            <button class="remove-btn" style="white-space: nowrap; margin-left: 1rem;" onclick="removeItem(${item.id})">Remove</button>
         `;
         itemsList.appendChild(div);
     });
@@ -200,82 +286,6 @@ window.removeItem = function(itemId) {
     state.items = state.items.filter(i => i.id !== itemId);
     renderItemsList();
 };
-
-itemizedCalcBtn.addEventListener('click', () => {
-    if (state.people.length === 0) {
-        alert('Please add at least one person.');
-        return;
-    }
-    
-    if (state.items.length === 0) {
-        alert('Please add at least one item.');
-        return;
-    }
-    
-    const taxPercent = parseFloat(itemizedTaxInput.value) || 0;
-    const tipPercent = parseFloat(itemizedTipInput.value) || 0;
-    
-    const subtotal = state.items.reduce((sum, item) => sum + item.price, 0);
-    const personShares = {};
-    
-    state.people.forEach(person => {
-        personShares[person.name] = 0;
-    });
-    
-    state.items.forEach(item => {
-        if (item.assignedTo.length === 0) {
-            alert(`Item "${item.name}" is not assigned to anyone.`);
-            return;
-        }
-        
-        const sharePerPerson = item.price / item.assignedTo.length;
-        item.assignedTo.forEach(person => {
-            personShares[person.name] += sharePerPerson;
-        });
-    });
-    
-    const tax = (subtotal * taxPercent) / 100;
-    const tip = ((subtotal + tax) * tipPercent) / 100;
-    
-    itemizedBreakdown.innerHTML = '';
-    state.people.forEach(person => {
-        const subtotalShare = personShares[person.name];
-        const proportion = subtotalShare / subtotal;
-        const taxShare = tax * proportion;
-        const tipShare = tip * proportion;
-        const totalShare = subtotalShare + taxShare + tipShare;
-        
-        const div = document.createElement('div');
-        div.className = 'person-breakdown';
-        div.innerHTML = `
-            <h5>${person.name}</h5>
-            <div class="breakdown-item">
-                <span>Subtotal:</span>
-                <span>${formatCurrency(subtotalShare)}</span>
-            </div>
-            <div class="breakdown-item">
-                <span>Tax (${taxPercent}%):</span>
-                <span>${formatCurrency(taxShare)}</span>
-            </div>
-            <div class="breakdown-item">
-                <span>Tip (${tipPercent}%):</span>
-                <span>${formatCurrency(tipShare)}</span>
-            </div>
-            <div class="person-total">
-                <span>Total:</span>
-                <span>${formatCurrency(totalShare)}</span>
-            </div>
-        `;
-        itemizedBreakdown.appendChild(div);
-    });
-    
-    document.getElementById('itemized-subtotal').textContent = formatCurrency(subtotal);
-    document.getElementById('itemized-tax-amount').textContent = formatCurrency(tax);
-    document.getElementById('itemized-tip-amount').textContent = formatCurrency(tip);
-    document.getElementById('itemized-grand-total').textContent = formatCurrency(subtotal + tax + tip);
-    
-    itemizedResults.classList.remove('hidden');
-});
 
 // UTILITIES
 function formatCurrency(value) {
