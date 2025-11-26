@@ -115,6 +115,11 @@ body {
 .mode-selector-section {
     margin-bottom: 2rem;
     text-align: center;
+    position: sticky;
+    top: 80px;
+    background-color: var(--bg-light);
+    padding: 1rem 0;
+    z-index: 50;
 }
 
 .mode-buttons {
@@ -203,6 +208,7 @@ textarea:focus {
     gap: 0.5rem;
     justify-content: space-between;
     flex-wrap: wrap;
+    margin-bottom: 0.5rem;
 }
 
 .tip-btn {
@@ -216,6 +222,7 @@ textarea:focus {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .tip-btn:hover {
@@ -279,6 +286,7 @@ textarea:focus {
 /* RESULTS */
 .mode-content {
     display: none;
+    min-height: 400px;
 }
 
 .mode-content.active {
