@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact FairSplit Bill Tool - Get in touch with questions or feedback.">
+    <title>Contact - FairSplit Bill Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🍽️ FairSplit</h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link active">Contact</a>
+                    <a href="the-only-sites.html" class="nav-link">More Tools</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h2 class="hero-title">Get in Touch</h2>
+                <p class="hero-subtitle">We'd love to hear from you!</p>
+            </section>
+
+            <section class="seo-content">
+                <p style="text-align: center; font-size: 1.05rem; margin-bottom: 2rem;">
+                    Have questions, feedback, or suggestions? Send us a message below.
+                </p>
+
+                <div class="calculator-card" style="max-width: 600px; margin: 0 auto;">
+                    <h3 class="card-title">Contact Form</h3>
+                    
+                    <form id="contact-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="contact-name">Your Name</label>
+                            <input type="text" id="contact-name" name="name" placeholder="Your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact-email">Email Address</label>
+                            <input type="email" id="contact-email" name="email" placeholder="your.email@example.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact-subject">Subject</label>
+                            <input type="text" id="contact-subject" name="subject" placeholder="What is this about?">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact-message">Message</label>
+                            <textarea id="contact-message" name="message" placeholder="Tell us what's on your mind..." rows="6" required></textarea>
+                        </div>
+
+                        <button type="submit" class="calc-btn">Send Message</button>
+                    </form>
+
+                    <div id="contact-success" class="results hidden" style="text-align: center;">
+                        <p style="font-size: 1.2rem; color: var(--primary-color); margin-bottom: 1rem;">✓ Message Received!</p>
+                        <p style="margin-bottom: 1rem;">Thank you for reaching out!</p>
+                        <button class="calc-btn" onclick="resetContactForm()">Send Another Message</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                    <h3>Frequently Asked Questions</h3>
+                    <ul>
+                        <li><strong>Do you store my data?</strong> No. Everything is calculated in your browser.</li>
+                        <li><strong>Does FairSplit work offline?</strong> Yes, once loaded, it works entirely offline.</li>
+                        <li><strong>Is FairSplit free?</strong> Yes, 100% free. No ads, no fees.</li>
+                        <li><strong>Can I use this commercially?</strong> Yes! Feel free to use and modify it.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigation</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="cookies.html">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>More</h4>
+                    <p>Check out more helpful tools.</p>
+                    <a href="the-only-sites.html" class="footer-link-btn">Visit Our Hub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FairSplit Bill Tool. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('contact-success').classList.remove('hidden');
+        });
+
+        function resetContactForm() {
+            document.getElementById('contact-form').style.display = 'flex';
+            document.getElementById('contact-form').reset();
+            document.getElementById('contact-success').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

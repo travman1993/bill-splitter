@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FairSplit Bill Tool - Split bills fairly for restaurants, group trips, and roommates.">
+    <title>FairSplit Bill Tool - Bill Splitter & Tip Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🍽️ FairSplit</h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                    <a href="the-only-sites.html" class="nav-link">More Tools</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h2 class="hero-title">Fair Bill Splitter</h2>
+                <p class="hero-subtitle">Split the bill fairly in seconds.</p>
+                <p class="hero-description">Perfect for restaurants, group trips, and roommate expenses.</p>
+            </section>
+
+            <section class="mode-selector-section">
+                <div class="mode-buttons">
+                    <button class="mode-btn active" data-mode="simple">Simple Split</button>
+                    <button class="mode-btn" data-mode="itemized">Itemized Split</button>
+                    <button class="mode-btn" data-mode="lucky">Who Pays? Game</button>
+                </div>
+            </section>
+
+            <!-- SIMPLE SPLIT MODE -->
+            <section id="simple-mode" class="mode-content active">
+                <div class="calculator-card">
+                    <h3 class="card-title">Simple Bill Split</h3>
+                    
+                    <div class="form-group">
+                        <label for="simple-bill">Total Bill Amount ($)</label>
+                        <input type="number" id="simple-bill" placeholder="Enter bill amount" min="0" step="0.01" value="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="simple-tax">Sales Tax (%)</label>
+                        <input type="number" id="simple-tax" placeholder="Tax percentage" min="0" step="0.01" value="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="simple-people">Number of People</label>
+                        <input type="number" id="simple-people" placeholder="How many people?" min="1" step="1" value="2">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tip Percentage</label>
+                        <div class="tip-buttons">
+                            <button class="tip-btn" data-tip="15">15%</button>
+                            <button class="tip-btn" data-tip="18">18%</button>
+                            <button class="tip-btn active" data-tip="20">20%</button>
+                        </div>
+                        <input type="number" id="simple-tip" placeholder="Custom tip %" min="0" step="0.01" value="20">
+                    </div>
+
+                    <button class="calc-btn" id="simple-calc-btn">Calculate</button>
+
+                    <div id="simple-results" class="results hidden">
+                        <div class="result-item">
+                            <span>Subtotal:</span>
+                            <span class="amount" id="simple-subtotal">$0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Tax:</span>
+                            <span class="amount" id="simple-tax-amount">$0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Tip:</span>
+                            <span class="amount" id="simple-tip-amount">$0.00</span>
+                        </div>
+                        <div class="result-item highlight">
+                            <span>Grand Total:</span>
+                            <span class="amount" id="simple-grand-total">$0.00</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="result-item highlight">
+                            <span>Each Person Pays:</span>
+                            <span class="amount" id="simple-per-person">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ITEMIZED SPLIT MODE -->
+            <section id="itemized-mode" class="mode-content hidden">
+                <div class="calculator-card">
+                    <h3 class="card-title">Itemized Bill Split</h3>
+                    
+                    <div class="section-block">
+                        <h4>Add People</h4>
+                        <div class="people-list" id="people-list"></div>
+                        <div class="form-group">
+                            <input type="text" id="person-name" placeholder="Enter person's name">
+                            <button class="add-btn" id="add-person-btn">Add Person</button>
+                        </div>
+                    </div>
+
+                    <div class="section-block">
+                        <h4>Add Items</h4>
+                        <div class="items-list" id="items-list"></div>
+                        <div class="form-group">
+                            <input type="text" id="item-name" placeholder="Item name" style="flex: 1;">
+                            <input type="number" id="item-price" placeholder="Price" min="0" step="0.01" style="width: 100px;">
+                            <button class="add-btn" id="add-item-btn">Add Item</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemized-tax">Sales Tax (%)</label>
+                        <input type="number" id="itemized-tax" placeholder="Tax %" min="0" step="0.01" value="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemized-tip">Tip (%)</label>
+                        <input type="number" id="itemized-tip" placeholder="Tip %" min="0" step="0.01" value="20">
+                    </div>
+
+                    <button class="calc-btn" id="itemized-calc-btn">Calculate Splits</button>
+
+                    <div id="itemized-results" class="results hidden">
+                        <div class="result-summary">
+                            <div class="result-item">
+                                <span>Subtotal:</span>
+                                <span class="amount" id="itemized-subtotal">$0.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Tax:</span>
+                                <span class="amount" id="itemized-tax-amount">$0.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Tip:</span>
+                                <span class="amount" id="itemized-tip-amount">$0.00</span>
+                            </div>
+                            <div class="result-item highlight">
+                                <span>Grand Total:</span>
+                                <span class="amount" id="itemized-grand-total">$0.00</span>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <h4>Each Person Owes:</h4>
+                        <div id="itemized-breakdown" class="breakdown"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHO PAYS GAME MODE -->
+            <section id="lucky-mode" class="mode-content hidden">
+                <div class="calculator-card">
+                    <h3 class="card-title">Who Pays? Lucky Game 🎰</h3>
+                    <div id="game-people-list" class="game-people-list"></div>
+                    <button class="calc-btn lucky-btn" id="spin-btn">Spin to Pick Payer!</button>
+                    <div id="game-result" class="game-result hidden">
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🎉 The bill payer is...</p>
+                        <p style="font-size: 2.5rem; font-weight: bold; color: #e74c3c; margin: 1rem 0;"><span id="payer-name"></span></p>
+                        <button class="calc-btn" id="spin-again-btn">Spin Again</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEO CONTENT -->
+            <section class="seo-content">
+                <h2>How to Fairly Split a Restaurant Bill</h2>
+                <p>Splitting a restaurant bill can be tricky. The easiest approach is to calculate the total bill including tax and tip, then divide by the number of people. However, if people ordered different amounts, an itemized split ensures fairness.</p>
+
+                <h3>Key Tips for Fair Splitting:</h3>
+                <ul>
+                    <li><strong>Calculate tax and tip first:</strong> Don't forget these when splitting.</li>
+                    <li><strong>Use itemized splits for unequal orders:</strong> If one person ordered appetizers and drinks while another had just a salad, fairness matters.</li>
+                    <li><strong>Round generously:</strong> A few extra cents benefit servers and keep the math simple.</li>
+                    <li><strong>Use technology:</strong> Apps and calculators take the guesswork out of splitting.</li>
+                </ul>
+
+                <h2>Splitting Rent and Utility Bills with Roommates</h2>
+                <p>Roommate bills are more complex than restaurant tabs. Rent should typically be split evenly unless room sizes differ, but utilities can be split by usage or evenly.</p>
+
+                <h2>Common Mistakes When Splitting the Bill</h2>
+                <p>Even with the best intentions, mistakes happen when splitting bills. Here are common pitfalls:</p>
+                <ul>
+                    <li><strong>Forgetting tax and tip:</strong> Many people split only the food cost.</li>
+                    <li><strong>Rounding down:</strong> Always round up slightly.</li>
+                    <li><strong>Not accounting for non-drinkers:</strong> Should teetotalers pay for everyone's wine?</li>
+                    <li><strong>Complex shared items:</strong> If someone shared an appetizer, split that item specifically.</li>
+                </ul>
+
+                <h2>Pros and Cons of Just Splitting Evenly</h2>
+                <p>The simplest approach is to split everything evenly. But is it always fair?</p>
+                <h3>Pros:</h3>
+                <ul>
+                    <li>Quick and easy—no complex math required.</li>
+                    <li>Reduces awkward conversations.</li>
+                    <li>Works well for groups where spending is roughly equal.</li>
+                </ul>
+                <h3>Cons:</h3>
+                <ul>
+                    <li>Unfair if some people ordered significantly more.</li>
+                    <li>Non-drinkers may subsidize drinkers' alcohol.</li>
+                    <li>Can breed resentment if splitting is unequal.</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigation</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="cookies.html">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>More Tools</h4>
+                    <p>Check out more helpful tools and calculators.</p>
+                    <a href="the-only-sites.html" class="footer-link-btn">Visit Our Hub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FairSplit Bill Tool. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
